@@ -1,0 +1,29 @@
+Sample data:
+     FlowRate    Pressure  AcousticSignal  Leak
+0  36.957867  90.665783       44.754060     1
+1  59.726618  99.518664       28.835468     0
+2  46.016256  91.985045       43.315050     1
+3  42.735863  94.346189       43.588245     1
+4  44.603574  93.837278       41.335994     1
+
+Confusion Matrix:
+ [[200  10]
+ [  9  81]]
+
+Classification Report:
+               precision    recall  f1-score   support
+
+           0       0.96      0.95      0.96       210
+           1       0.89      0.90      0.89        90
+
+    accuracy                           0.94       300
+   macro avg       0.92      0.93      0.92       300
+weighted avg       0.94      0.94      0.94       300
+
+--- Leak Detection Test ---
+🚨 Leak Detected! Please check the pipeline.
+✅ No Leak. System is normal
+
+--- Leak Detection Test (with confidence)---
+🚨 Leak Detected! Confidence: 0.99
+✅ No Leak. Confidence: 0.98
