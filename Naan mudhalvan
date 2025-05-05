@@ -1,0 +1,58 @@
+# Import libraries
+import numpy as np
+import pandas as pd
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import classification_report, confusion_matrix
+
+# Step 1: Simulate Sensor Data
+np.random.seed(42)
+
+# 1000 samples: 0 = normal, 1 = leak
+labels = np.random.choice([0, 1], size=1000, p=[0.7, 0.3])
+
+# Generate features
+flow_rate = np.random.normal(loc=50, scale=10, size=1000) - labels * np.random.uniform(10, 30, size=1000)
+pressure = np.random.normal(loc=100, scale=5, size=1000) - labels * np.random.uniform(5, 15, size=1000)
+acoustic = np.random.normal(loc=30, scale=7, size=1000) + labels * np.random.uniform(10, 20, size=1000)
+
+# Create DataFrame
+data = pd.DataFrame({
+    'FlowRate': flow_rate,
+    'Pressure': pressure,
+    'AcousticSignal': acoustic,
+    'Leak': labels
+})
+
+print("Sample data:\n", data.head())
+
+# Step 2: Prepare Data
+X = data[['FlowRate', 'Pressure', 'AcousticSignal']]
+y = data['Leak']
+
+# Split data
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+
+# Step 3: Train AI Model
+model = RandomForestClassifier(n_estimators=100, random_state=42)
+model.fit(X_train, y_train)
+
+# Step 4: Predict and Evaluate
+y_pred = model.predict(X_test)
+
+print("\nConfusion Matrix:\n", confusion_matrix(y_test, y_pred))
+print("\nClassification Report:\n", classification_report(y_test, y_pred))
+
+# Step 5: Leak Detection Demo
+def detect_leak(flow, pressure, acoustic):
+    input_data = np.array([[flow, pressure, acoustic]])
+    prediction = model.predict(input_data)
+    if prediction[0] == 1:
+        print("🚨 Leak Detected! Please check the pipeline.")
+    else:
+        print("✅ No Leak. System is normal.")
+
+# Example detection
+print("\n--- Leak Detection Test ---")
+detect_leak(flow=30, pressure=85, acoustic=50)  # Simulate leak
+detect_leak(flow=55, pressure=98, acoustic=28)  # Normal condition
